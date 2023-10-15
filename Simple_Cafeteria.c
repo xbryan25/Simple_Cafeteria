@@ -380,9 +380,7 @@ void add_item(struct FoodItem food_items[], int *ptr_num_of_items){
     scanf("%d", &item_price);
 
     // ----------Edit the CSV----------
-    char line[100];
-
-    FILE *file, *temp;
+    FILE *file;
 
     file = fopen("items.csv", "a");
 
@@ -406,7 +404,6 @@ void add_item(struct FoodItem food_items[], int *ptr_num_of_items){
 void delete_item(struct FoodItem food_items[], int *ptr_num_of_items){
     int num_of_items = *ptr_num_of_items;
     int change_id_number;
-    char store_name[64];
     int after_change_id_number = 0;
 
     printf("Which item would you like to delete? (Input ID number)\n");
@@ -481,7 +478,6 @@ void delete_item(struct FoodItem food_items[], int *ptr_num_of_items){
 
         system("cls");
 
-        //TODO: Don't forget to free the memory.
         *ptr_num_of_items = num_of_items - 1;
     }
 }
@@ -508,7 +504,7 @@ void show_menu(struct FoodItem food_items[], int *ptr_num_of_items, int state){
 
     // Gets the length of max_price
     int len_id_num = get_int_len(max_id_number);
-    int len_price = get_int_len(max_price);
+    // int len_price = get_int_len(max_price);
 
     // TODO: Fix string formatting using padding
 
@@ -533,8 +529,6 @@ void show_menu(struct FoodItem food_items[], int *ptr_num_of_items, int state){
         // %*s means right padding
 
         // ID # | Name | Price
-
-        //TODO: make unsigned long compatible with int
 
         printf("|%-*s%d%*s|%-*s%s%*s|%-*s%d%*s|\n", ((len_id_num - get_int_len(food_items[i].id_number)) + 5) / 2, 
                "", food_items[i].id_number, ((len_id_num - get_int_len(food_items[i].id_number)) + 6) / 2, "", 
