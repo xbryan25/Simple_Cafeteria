@@ -4,7 +4,6 @@
 #include <math.h>
 #include <windows.h>
 
-
 // Lesson learned: declare structs first before declaring functions.
 // Another lesson learned: POINTERS ARE THE GOAT!!!
 
