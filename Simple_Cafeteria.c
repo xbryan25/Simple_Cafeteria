@@ -3,6 +3,7 @@
 #include <string.h>
 #include <math.h>
 #include <windows.h>
+#include <ctype.h>
 
 // Lesson learned: declare structs first before declaring functions.
 // Another lesson learned: POINTERS ARE THE GOAT!!!
@@ -119,9 +120,13 @@ void remove_fgets_newline(char name_input[]){
 }
 
 void main_screen(){
+    int choice = 0;
+    int is_digit = 0;
+
+    char exit_choice = 'n';
+
     while (1){
-        int choice;
-        char exit_choice = 'n';
+        Sleep(1000);
 
         printf("--- Cafeteria System ---\n");
         printf("Select one of the options.\n");
@@ -130,47 +135,60 @@ void main_screen(){
         printf("[3] - Exit\n");
 
         printf("\nChoose: ");
-        scanf("%d", &choice);
-        system("cls");
 
-        struct FoodItem* food_items = open_file();
-        int len_of_file = return_len_of_file(food_items);
-        int *ptr_len_of_file = &len_of_file;
-        int state_for_show_menu = 0;
+        is_digit = scanf(" %d", &choice);
 
-        switch(choice){
-            case 1:
-                show_menu(food_items, ptr_len_of_file, state_for_show_menu);
-                break;
+        if (is_digit == 0){
+            printf("\nOnly input \"1\", \"2\", and \"3\". Please try again.\n\n");
+            Sleep(2000);
+            system("pause");
+            system("cls");
+            fflush(stdin);
+            continue;
+        } else{
+            system("cls");
 
-            case 2:
-                admin(food_items, ptr_len_of_file);
-                break;
+            struct FoodItem* food_items = open_file();
+            int len_of_file = return_len_of_file(food_items);
+            int *ptr_len_of_file = &len_of_file;
+            int state_for_show_menu = 0;
 
-            case 3:
-                printf("Are you sure you want to exit the program? (y/N)");
-                printf("\nChoose: ");
-                scanf(" %c", &exit_choice);
+            switch(choice){
+                case 1:
+                    show_menu(food_items, ptr_len_of_file, state_for_show_menu);
+                    break;
 
-                switch(exit_choice){
-                    case 'y':
-                        printf("\nThank you for running the program!");
-                        exit(0);   
-                    case 'n': 
-                        system("cls");
-                        break;
-                    default:
-                        printf("\nInvalid option.\n");
-                        system("pause");
-                        system("cls");
-                }
-                break;
-                
-            default:
-                printf("Invalid option.\n");
-                Sleep(1000);
-                system("cls");
-        }   
+                case 2:
+                    admin(food_items, ptr_len_of_file);
+                    break;
+
+                case 3:
+                    printf("Are you sure you want to exit the program? (y/N)");
+                    printf("\nChoose: ");
+                    scanf(" %c", &exit_choice);
+
+                    switch(exit_choice){
+                        case 'y':
+                            printf("\nThank you for running the program!");
+                            exit(0);   
+                        case 'n': 
+                            system("cls");
+                            break;
+                        default:
+                            printf("\nInvalid option.\n");
+                            system("pause");
+                            system("cls");
+                    }
+                    break;
+                    
+                default:
+                    printf("Invalid option.\n");
+                    Sleep(1000);
+                    system("cls");
+            }   
+        }
+
+        
    }
 }
 
@@ -485,68 +503,79 @@ void delete_item(struct FoodItem food_items[], int *ptr_num_of_items){
 void show_menu(struct FoodItem food_items[], int *ptr_num_of_items, int state){
     int num_of_items = *ptr_num_of_items;
 
-    int max_fooditem_len = 0;
-    int max_id_number = num_of_items;
-    int max_price = 0;
+    if (num_of_items == 0 && state == 0){
+        printf("The menu is currently empty. Go to admin mode and add items. ");
+        Sleep(2500);
+        system("cls");
+    } else if (num_of_items == 0 && state == 1){
+        printf("The menu is currently empty. Please add items. \n");
+        Sleep(2500);
+        system("cls");
+    } else{
+        int max_fooditem_len = 0;
+        int max_id_number = num_of_items;
+        int max_price = 0;
 
-    // Checks the max length and max price of the food items
+        // Checks the max length and max price of the food items
 
-    for (int h = 0; h < num_of_items; h++){
-        if (h == 0){
-            max_fooditem_len = get_str_len(food_items[h].food_name);
-            max_price = food_items[h].price;
-        } else if (get_str_len(food_items[h].food_name) > max_fooditem_len){
-            max_fooditem_len = get_str_len(food_items[h].food_name);
-        } else if (food_items[h].price > max_price){
-            max_price = food_items[h].price;
+        for (int h = 0; h < num_of_items; h++){
+            if (h == 0){
+                max_fooditem_len = get_str_len(food_items[h].food_name);
+                max_price = food_items[h].price;
+            } else if (get_str_len(food_items[h].food_name) > max_fooditem_len){
+                max_fooditem_len = get_str_len(food_items[h].food_name);
+            } else if (food_items[h].price > max_price){
+                max_price = food_items[h].price;
+            }
         }
-    }
 
-    // Gets the length of max_price
-    int len_id_num = get_int_len(max_id_number);
-    // int len_price = get_int_len(max_price);
+        // Gets the length of max_price
+        int len_id_num = get_int_len(max_id_number);
+        // int len_price = get_int_len(max_price);
 
-    // TODO: Fix string formatting using padding
+        // TODO: Fix string formatting using padding
 
-    // This was derived using the complex printf statement below 
-    int length_of_table = 16 + max_fooditem_len + len_id_num + 3/2 + 2;
+        // This was derived using the complex printf statement below 
+        int length_of_table = 16 + max_fooditem_len + len_id_num + 3/2 + 2;
 
-    for (int i = 0; i < num_of_items; i++){
+        for (int i = 0; i < num_of_items; i++){
 
-        if (i == 0){
-            // Padding value was determined via trial and error.
+            if (i == 0){
+                // Padding value was determined via trial and error.
+
+                printf("+%.*s+\n", length_of_table, "---------------------------------------------");
+                printf("|%-*sID #%*s|%-*sName%*s|%-*sPrice%*s|\n", ((len_id_num - 4) + 5) / 2,
+                    "", len_id_num, "", ((max_fooditem_len - 4) + 3) / 2, "", ((max_fooditem_len - 4) + 4) / 2, "",
+                    ((len_id_num - 5) + 6) / 2, "", ((len_id_num - 5) + 5) / 2, "");
+                printf("+%.*s+\n", length_of_table, "---------------------------------------------");       
+            }
+
+            // I don't know why left padding has to be n-1 than the right padding.
+            // String concatenation in C is so confusing.
+            // %-*s means left padding
+            // %*s means right padding
+
+            // ID # | Name | Price
+
+            printf("|%-*s%d%*s|%-*s%s%*s|%-*s%d%*s|\n", ((len_id_num - get_int_len(food_items[i].id_number)) + 5) / 2, 
+                "", food_items[i].id_number, ((len_id_num - get_int_len(food_items[i].id_number)) + 6) / 2, "", 
+                ((max_fooditem_len - get_str_len(food_items[i].food_name)) + 3) / 2, "", food_items[i].food_name, 
+                ((max_fooditem_len - get_str_len(food_items[i].food_name)) + 4) / 2, "",
+                ((len_id_num - get_int_len(food_items[i].price)) + 6) / 2, "", food_items[i].price, 
+                ((len_id_num - get_int_len(food_items[i].price)) + 5) / 2, "");
+
 
             printf("+%.*s+\n", length_of_table, "---------------------------------------------");
-            printf("|%-*sID #%*s|%-*sName%*s|%-*sPrice%*s|\n", ((len_id_num - 4) + 5) / 2,
-                   "", len_id_num, "", ((max_fooditem_len - 4) + 3) / 2, "", ((max_fooditem_len - 4) + 4) / 2, "",
-                   ((len_id_num - 5) + 6) / 2, "", ((len_id_num - 5) + 5) / 2, "");
-            printf("+%.*s+\n", length_of_table, "---------------------------------------------");       
         }
 
-        // I don't know why left padding has to be n-1 than the right padding.
-        // String concatenation in C is so confusing.
-        // %-*s means left padding
-        // %*s means right padding
+        printf("\n\n");
 
-        // ID # | Name | Price
+        if (state == 0){
+            accept_input(food_items, ptr_num_of_items);
+        } 
 
-        printf("|%-*s%d%*s|%-*s%s%*s|%-*s%d%*s|\n", ((len_id_num - get_int_len(food_items[i].id_number)) + 5) / 2, 
-               "", food_items[i].id_number, ((len_id_num - get_int_len(food_items[i].id_number)) + 6) / 2, "", 
-               ((max_fooditem_len - get_str_len(food_items[i].food_name)) + 3) / 2, "", food_items[i].food_name, 
-               ((max_fooditem_len - get_str_len(food_items[i].food_name)) + 4) / 2, "",
-               ((len_id_num - get_int_len(food_items[i].price)) + 6) / 2, "", food_items[i].price, 
-               ((len_id_num - get_int_len(food_items[i].price)) + 5) / 2, "");
-
-
-        printf("+%.*s+\n", length_of_table, "---------------------------------------------");
     }
 
-    printf("\n\n");
-
-    if (state == 0){
-        accept_input(food_items, ptr_num_of_items);
-    } 
-    
 }
 
 void display_cart(struct Cart cart[], int num_of_item_cart){
