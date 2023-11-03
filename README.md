@@ -25,3 +25,4 @@
 - [Reference 14](https://stackoverflow.com/questions/47028165/how-do-i-return-an-array-of-struct-from-a-function) (Return an array of struct from a function)
 - [Reference 15](https://stackoverflow.com/questions/38949089/editing-a-specific-value-in-a-csv-text-file-through-c-programming) (Edit a specific value in a csv text file) (Make a temp csv file and delete orig file, and rename temp file)
 - [Reference 16](https://stackoverflow.com/questions/4844914/having-a-function-change-the-value-a-pointer-represents-in-c) (Use pointers to change a value)
+- [Reference 17](https://www.youtube.com/watch?v=xYg7hdN-9uc) (scanf() gets skipped in a while loop)
